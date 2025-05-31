@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>URL Domain Extractor</title>
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --secondary-color: #3f37c9;
+            --accent-color: #4895ef;
+            --light-color: #f8f9fa;
+            --dark-color: #212529;
+            --success-color: #4cc9f0;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--dark-color);
+            background-color: #f5f7fa;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #e1e5eb;
+        }
+        
+        h1 {
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+        
+        .subtitle {
+            color: #6c757d;
+            font-size: 1.1rem;
+        }
+        
+        .tool-container {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .input-area {
+            margin-bottom: 1.5rem;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--dark-color);
+        }
+        
+        textarea {
+            width: 100%;
+            min-height: 150px;
+            padding: 1rem;
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+            font-family: inherit;
+            font-size: 0.95rem;
+            resize: vertical;
+            transition: border-color 0.2s;
+        }
+        
+        textarea:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(72, 149, 239, 0.2);
+        }
+        
+        .buttons {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 5px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            flex: 1;
+        }
+        
+        button:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-1px);
+        }
+        
+        button.secondary {
+            background-color: #6c757d;
+        }
+        
+        button.secondary:hover {
+            background-color: #5a6268;
+        }
+        
+        .result-area {
+            margin-top: 2rem;
+        }
+        
+        .result-box {
+            background-color: #f8f9fa;
+            border: 1px solid #e1e5eb;
+            border-radius: 5px;
+            padding: 1rem;
+            min-height: 100px;
+            max-height: 300px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            font-family: monospace;
+        }
+        
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 1rem;
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+        
+        .copy-btn {
+            background-color: var(--success-color);
+            margin-top: 1rem;
+            width: 100%;
+        }
+        
+        .copy-btn:hover {
+            background-color: #3aa8d8;
+        }
+        
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+        
+        .feature-card {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+        
+        .feature-card h3 {
+            color: var(--primary-color);
+            margin-top: 0;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid #e1e5eb;
+            color: #6c757d;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            .buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>URL Domain Extractor</h1>
+            <p class="subtitle">Extract clean domain names from a list of URLs</p>
+        </header>
+        
+        <div class="tool-container">
+            <div class="input-area">
+                <label for="urls">Paste your URLs here (one per line or separated by spaces):</label>
+                <textarea id="urls" placeholder="Example:
+https://example.com/path/page.html
+http://sub.domain.net/resource
+blog.site.org/article?query=string"></textarea>
+            </div>
+            
+            <div class="buttons">
+                <button id="extract-btn">Extract Domains</button>
+                <button id="clear-btn" class="secondary">Clear All</button>
+            </div>
+            
+            <div class="result-area">
+                <label for="result">Extracted Domains:</label>
+                <div id="result" class="result-box"></div>
+                <div class="stats">
+                    <span id="count">0 domains found</span>
+                    <span id="time"></span>
+                </div>
+                <button id="copy-btn" class="copy-btn">Copy to Clipboard</button>
+            </div>
+        </div>
+        
+        <div class="features">
+            <div class="feature-card">
+                <h3>How It Works</h3>
+                <p>This tool extracts just the domain name from any URL, removing:</p>
+                <ul>
+                    <li>HTTP/HTTPS protocols</li>
+                    <li>Subdomains (optional)</li>
+                    <li>Paths and filenames</li>
+                    <li>Query parameters</li>
+                    <li>Port numbers</li>
+                </ul>
+            </div>
+            <div class="feature-card">
+                <h3>Example Input</h3>
+                <pre>https://www.example.com/page
+http://sub.domain.org/path/
+blog.site.net/article?id=123
+invalid-url
+mydomain.com</pre>
+            </div>
+            <div class="feature-card">
+                <h3>Example Output</h3>
+                <pre>example.com
+domain.org
+site.net
+mydomain.com</pre>
+            </div>
+        </div>
+        
+        <footer>
+            <p>© 2023 URL Domain Extractor Tool | Handcrafted with ❤️</p>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlsTextarea = document.getElementById('urls');
+            const resultBox = document.getElementById('result');
+            const extractBtn = document.getElementById('extract-btn');
+            const clearBtn = document.getElementById('clear-btn');
+            const copyBtn = document.getElementById('copy-btn');
+            const countSpan = document.getElementById('count');
+            const timeSpan = document.getElementById('time');
+            
+            extractBtn.addEventListener('click', extractDomains);
+            clearBtn.addEventListener('click', clearAll);
+            copyBtn.addEventListener('click', copyToClipboard);
+            
+            function extractDomains() {
+                const startTime = performance.now();
+                const input = urlsTextarea.value.trim();
+                
+                if (!input) {
+                    resultBox.textContent = 'Please enter some URLs first.';
+                    countSpan.textContent = '0 domains found';
+                    timeSpan.textContent = '';
+                    return;
+                }
+                
+                // Split by new lines or spaces
+                const urlLines = input.split(/[\n\s]+/).filter(line => line.trim());
+                const domains = new Set();
+                
+                urlLines.forEach(line => {
+                    try {
+                        // Add protocol if missing to make URL parsing work
+                        let urlToParse = line.trim();
+                        if (!urlToParse.startsWith('http://') && !urlToParse.startsWith('https://')) {
+                            urlToParse = 'http://' + urlToParse;
+                        }
+                        
+                        const url = new URL(urlToParse);
+                        let domain = url.hostname;
+                        
+                        // Remove www. if present
+                        domain = domain.replace(/^www\./i, '');
+                        
+                        // Add to set (automatically handles duplicates)
+                        domains.add(domain);
+                    } catch (e) {
+                        // Ignore invalid URLs
+                    }
+                });
+                
+                const sortedDomains = Array.from(domains).sort();
+                resultBox.textContent = sortedDomains.join('\n');
+                
+                const endTime = performance.now();
+                const timeTaken = ((endTime - startTime) / 1000).toFixed(3);
+                
+                countSpan.textContent = `${sortedDomains.length} unique domains found`;
+                timeSpan.textContent = `Processed in ${timeTaken} seconds`;
+            }
+            
+            function clearAll() {
+                urlsTextarea.value = '';
+                resultBox.textContent = '';
+                countSpan.textContent = '0 domains found';
+                timeSpan.textContent = '';
+            }
+            
+            function copyToClipboard() {
+                const resultText = resultBox.textContent;
+                if (!resultText) {
+                    alert('No results to copy!');
+                    return;
+                }
+                
+                navigator.clipboard.writeText(resultText)
+                    .then(() => {
+                        copyBtn.textContent = 'Copied!';
+                        setTimeout(() => {
+                            copyBtn.textContent = 'Copy to Clipboard';
+                        }, 2000);
+                    })
+                    .catch(err => {
+                        console.error('Failed to copy: ', err);
+                        alert('Failed to copy to clipboard. Please try again.');
+                    });
+            }
+        });
+    </script>
+</body>
+</html>
