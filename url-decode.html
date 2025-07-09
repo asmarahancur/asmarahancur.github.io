@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Custom URL Encoder / Decoder</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; background: #f5f5f5; }
+    textarea, input, button {
+      width: 100%; padding: 10px; margin: 10px 0;
+      font-size: 16px; box-sizing: border-box;
+    }
+    .container { max-width: 700px; margin: auto; background: white; padding: 20px; border-radius: 10px; }
+    h1 { text-align: center; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Custom URL Encode / Decode Tool</h1>
+
+    <label for="inputText">Input Text:</label>
+    <textarea id="inputText" rows="4" placeholder="Masukkan teks biasa atau teks encoded..."></textarea>
+
+    <button onclick="encodeText()">🔒 Encode (\\xxx format)</button>
+    <button onclick="decodeText()">🔓 Decode (\\xxx format)</button>
+
+    <label for="resultText">Hasil:</label>
+    <textarea id="resultText" rows="4" readonly></textarea>
+  </div>
+
+  <script>
+    function encodeText() {
+      const text = document.getElementById("inputText").value;
+      let result = "";
+      for (let i = 0; i < text.length; i++) {
+        let octal = text.charCodeAt(i).toString(8);
+        while (octal.length < 3) octal = "0" + octal;
+        result += "\\" + octal;
+      }
+      document.getElementById("resultText").value = result;
+    }
+
+    function decodeText() {
+      const text = document.getElementById("inputText").value;
+      const result = text.replace(/\\(\d{3})/g, (match, octal) =>
+        String.fromCharCode(parseInt(octal, 8))
+      );
+      document.getElementById("resultText").value = result;
+    }
+  </script>
+</body>
+</html>
