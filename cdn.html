@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Videy.co CDN Generator</title>
+    <style>
+        :root {
+            --primary-color: #4a6bff;
+            --secondary-color: #f8f9fa;
+            --accent-color: #ff4757;
+            --text-color: #333;
+            --light-text: #6c757d;
+            --border-color: #dee2e6;
+        }
+        
+        * {
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: #f5f7ff;
+            margin: 0;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            width: 100%;
+        }
+        
+        h1 {
+            color: var(--primary-color);
+            text-align: center;
+            margin-bottom: 30px;
+            font-weight: 600;
+            font-size: clamp(1.5rem, 2.5vw, 2rem);
+        }
+        
+        .logo {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .logo svg {
+            height: 50px;
+            width: 50px;
+        }
+        
+        .description {
+            text-align: center;
+            color: var(--light-text);
+            margin-bottom: 30px;
+            font-size: clamp(0.85rem, 2vw, 0.95rem);
+            line-height: 1.5;
+            padding: 0 10px;
+        }
+        
+        .input-area {
+            margin-bottom: 20px;
+            width: 100%;
+        }
+        
+        .input-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--text-color);
+            font-size: clamp(0.9rem, 2vw, 1rem);
+        }
+        
+        textarea {
+            width: 100%;
+            min-height: 150px;
+            padding: 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            resize: vertical;
+            font-family: inherit;
+            font-size: clamp(0.85rem, 2vw, 0.9rem);
+            line-height: 1.5;
+        }
+        
+        textarea::placeholder {
+            color: #adb5bd;
+            font-size: clamp(0.8rem, 2vw, 0.85rem);
+        }
+        
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(74, 107, 255, 0.2);
+        }
+        
+        .buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        button {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            flex: 1 1 150px;
+            font-size: clamp(0.85rem, 2vw, 0.9rem);
+        }
+        
+        .generate-btn {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .generate-btn:hover {
+            background-color: #3a5bef;
+            transform: translateY(-2px);
+        }
+        
+        .clear-btn {
+            background-color: var(--accent-color);
+            color: white;
+        }
+        
+        .clear-btn:hover {
+            background-color: #e8414d;
+            transform: translateY(-2px);
+        }
+        
+        .copy-btn {
+            background-color: #2ed573;
+            color: white;
+            width: 100%;
+            margin-top: 10px;
+        }
+        
+        .copy-btn:hover {
+            background-color: #27ae60;
+            transform: translateY(-2px);
+        }
+        
+        .result-area {
+            margin-top: 30px;
+            width: 100%;
+        }
+        
+        .result-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--text-color);
+            font-size: clamp(0.9rem, 2vw, 1rem);
+        }
+        
+        .result-box {
+            background-color: var(--secondary-color);
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            padding: 15px;
+            min-height: 50px;
+            word-break: break-all;
+            font-size: clamp(0.85rem, 2vw, 0.9rem);
+            line-height: 1.5;
+            white-space: pre-wrap;
+            overflow-wrap: break-word;
+        }
+        
+        .stats {
+            margin-top: 15px;
+            font-size: clamp(0.8rem, 2vw, 0.85rem);
+            color: var(--light-text);
+            text-align: right;
+        }
+        
+        .instructions {
+            margin-top: 30px;
+            padding: 15px;
+            background-color: #f1f4ff;
+            border-radius: 5px;
+            font-size: clamp(0.85rem, 2vw, 0.9rem);
+        }
+        
+        .instructions h3 {
+            margin-top: 0;
+            color: var(--primary-color);
+            font-size: clamp(1rem, 2vw, 1.1rem);
+        }
+        
+        .instructions ul {
+            padding-left: 20px;
+            margin-bottom: 0;
+        }
+        
+        .instructions li {
+            margin-bottom: 8px;
+        }
+        
+        .instructions li:last-child {
+            margin-bottom: 0;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            font-size: clamp(0.75rem, 2vw, 0.8rem);
+            color: var(--light-text);
+            line-height: 1.4;
+        }
+        
+        @media (max-width: 480px) {
+            .container {
+                padding: 20px 15px;
+            }
+            
+            textarea {
+                padding: 12px;
+            }
+            
+            button {
+                padding: 10px 15px;
+            }
+            
+            .instructions {
+                padding: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M19 3H5C3.89543 3 3 3.89543 3 5V19C3 20.1046 3.89543 21 5 21H19C20.1046 21 21 20.1046 21 19V5C21 3.89543 20.1046 3 19 3Z" stroke="#4a6bff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M9 16V8L15 12L9 16Z" fill="#4a6bff"/>
+            </svg>
+        </div>
+        
+        <h1>Videy.co CDN Generator</h1>
+        
+        <p class="description">
+            Convert Videy.co share links to direct CDN URLs for faster downloads and embedding.
+            Works with all Videy.co URL formats.
+        </p>
+        
+        <div class="input-area">
+            <label for="input-links" class="input-label">Paste Videy.co Links:</label>
+            <textarea id="input-links" placeholder="Example formats:
+https://videy.co/v/?id=3rg7HoYX1
+https://videy.co/v/3rg7HoYX1  
+https://videy.co/3rg7HoYX1
+https://videy.co/v?id=3rg7HoYX1
+
+You can paste multiple links at once (one per line or separated by spaces)"></textarea>
+        </div>
+        
+        <div class="buttons">
+            <button class="generate-btn" id="generate-btn">Generate CDN URLs</button>
+            <button class="clear-btn" id="clear-btn">Clear All</button>
+        </div>
+        
+        <div class="result-area">
+            <label class="result-label">Generated CDN URLs:</label>
+            <div class="result-box" id="result-box"></div>
+            <div class="stats" id="stats">0 links processed</div>
+            <button class="copy-btn" id="copy-btn">Copy to Clipboard</button>
+        </div>
+        
+        <div class="instructions">
+            <h3>How to use:</h3>
+            <ul>
+                <li>Paste Videy.co links in the input box (supports multiple formats)</li>
+                <li>Click "Generate CDN URLs" to convert them to direct CDN links</li>
+                <li>Use the "Copy" button to copy all generated links to clipboard</li>
+                <li>Non-Videy.co links will be automatically filtered out</li>
+            </ul>
+        </div>
+        
+        <div class="footer">
+            <p>Videy.co CDN Generator Tool &copy; <span id="year"></span></p>
+            <p>Works on all devices - Desktop, Tablet & Mobile</p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set current year in footer
+            document.getElementById('year').textContent = new Date().getFullYear();
+            
+            // Get DOM elements
+            const inputLinks = document.getElementById('input-links');
+            const generateBtn = document.getElementById('generate-btn');
+            const clearBtn = document.getElementById('clear-btn');
+            const copyBtn = document.getElementById('copy-btn');
+            const resultBox = document.getElementById('result-box');
+            const stats = document.getElementById('stats');
+            
+            // Generate CDN URLs
+            generateBtn.addEventListener('click', function() {
+                const inputText = inputLinks.value.trim();
+                if (!inputText) {
+                    alert('Please paste some Videy.co links first!');
+                    return;
+                }
+                
+                // Split input by new lines or spaces
+                const links = inputText.split(/\s+/).filter(link => link.trim() !== '');
+                let validLinks = 0;
+                let output = '';
+                
+                links.forEach(link => {
+                    // Extract video ID from various Videy.co URL formats
+                    const match = link.match(/(?:videy\.co\/)(?:v\/\?id=|v\/|v\?id=|)([a-zA-Z0-9]+)(?:\/|$|\?|)/i);
+                    if (match && match[1]) {
+                        const videoId = match[1];
+                        const cdnUrl = `https://cdn.videy.co/${videoId}.mp4`;
+                        output += cdnUrl + '\n';
+                        validLinks++;
+                    }
+                });
+                
+                if (validLinks > 0) {
+                    resultBox.textContent = output.trim();
+                    stats.textContent = `${validLinks} link${validLinks !== 1 ? 's' : ''} processed`;
+                } else {
+                    resultBox.textContent = 'No valid Videy.co links found in the input.\nPlease check your links and try again.';
+                    stats.textContent = '0 links processed';
+                }
+            });
+            
+            // Clear all fields
+            clearBtn.addEventListener('click', function() {
+                inputLinks.value = '';
+                resultBox.textContent = '';
+                stats.textContent = '0 links processed';
+                inputLinks.focus();
+            });
+            
+            // Copy results to clipboard
+            copyBtn.addEventListener('click', function() {
+                if (!resultBox.textContent.trim()) {
+                    alert('No results to copy! Generate some CDN URLs first.');
+                    return;
+                }
+                
+                navigator.clipboard.writeText(resultBox.textContent)
+                    .then(() => {
+                        const originalText = copyBtn.textContent;
+                        copyBtn.textContent = 'Copied!';
+                        copyBtn.style.backgroundColor = '#218838';
+                        setTimeout(() => {
+                            copyBtn.textContent = originalText;
+                            copyBtn.style.backgroundColor = '#2ed573';
+                        }, 2000);
+                    })
+                    .catch(err => {
+                        console.error('Failed to copy: ', err);
+                        alert('Failed to copy text to clipboard. Please try again.');
+                    });
+            });
+            
+            // Focus the textarea when page loads
+            inputLinks.focus();
+        });
+    </script>
+</body>
+</html>
